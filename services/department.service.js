@@ -1,11 +1,11 @@
 const departamentRepository = require('../repositories/department.repository');
 
-exports.findAll = function() {
-    return departamentRepository.getAllDepartaments();
+exports.findAll = async function() {
+    return await departamentRepository.getAllDepartaments();
 }
 
-exports.findById = function(id){
-    const department =  departamentRepository.findById(parseInt(id));
+exports.findById = async function(id){
+    const department = await departamentRepository.findById(parseInt(id));
     if(!department) {
         throw new Error('Department not found')
     }
@@ -13,38 +13,43 @@ exports.findById = function(id){
     return department;
 }
 
-exports.createDepartment = function(departmentData) {
+exports.createDepartment =async function(departmentData) {
     const {name} = departmentData;
 
-    if (!name) {
-        throw new Error('Name field is required');
+     if (!name || !name.trim()) {
+        throw new Error('Department name is required');
     }
 
     const newDepartment = {
-        id: Date.now(),
-        name
+        name: name.trim()
     };
 
-    return departamentRepository.createDepartment(newDepartment);
+    return await departamentRepository.createDepartment(newDepartment);
 }
 
-exports.updateDepartment = function(id, departmentData) {
-    const department = exports.findById(parseInt(id));
+exports.updateDepartment = async function(id, departmentData) {
+   const parsedId = parseInt(id);
 
-    if(!department ) {
-        throw new Error('Department is not found');
+   const { name } = departmentData;
+
+   if (!name || !name.trim()) {
+        throw new Error('Department name is required');
     }
 
-    return departamentRepository.updateDepartment(department, departmentData);
+    await exports.findById(parsedId);
+
+    return await departamentRepository.updateDepartment(parsedId, {name: name.trim()});
 
 }
 
-exports.deleteDepartment = function(id) {
-    const deletedDepartment = exports.findById(parseInt(id));
+exports.deleteDepartment =async function(id) {
+    const parsedId = parseInt(id);
 
-    if(!deletedDepartment ) {
-        throw new Error('Department is not found');
+    if (isNaN(parsedId)) {
+        throw new Error('Invalid department id');
     }
 
-    return departamentRepository.delete(parseInt(id));
+    await exports.findById(parsedId);
+
+    return await departamentRepository.delete(parsedId);
 }

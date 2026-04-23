@@ -1,32 +1,42 @@
 const departamentData = require('../data/departaments');
+const prisma = require('../utils/prisma');
 
-exports.getAllDepartaments = function() {
-    return departamentData;
+exports.getAllDepartaments = async function() {
+    return await prisma.department.findMany();
 };
 
-exports.findById = function(id) {
-    const department = departamentData.find(department => department.id === id);
-    return department;
+exports.findById = async function(id) {
+    return await prisma.department.findUnique({
+        where: {
+            id: id
+        }
+    })
 };
 
-exports.createDepartment = function(department) {
-    departamentData.push(department);
-
-    return department;
+exports.createDepartment = async function(department) {
+  return await prisma.department.create({
+    data:{
+        name: department.name,  
+    }
+  })
 }
 
-exports.updateDepartment = function(department, departmentData) {
-    department.name = departmentData.name;
-
-    return department;
+exports.updateDepartment = async function(id, departmentData) {
+    return await prisma.department.update({
+        where: {
+            id: id
+        },
+        data: {
+            name: departamentData.name
+        }
+    });
 }
 
-exports.delete = function(id) {
-    const departmentIndex = departamentData.findIndex(department => department.id === id);
-    const deletedDepartment = departamentData[departmentIndex];
-
-    departamentData.splice(departmentIndex, 1);
-
-    return deletedDepartment;
+exports.delete = async function(id) {
+    return await prisma.department.delete({
+        where: {
+            id: id
+        }
+    })
 
 }
