@@ -21,8 +21,8 @@ exports.getEmployeeById = function(req, res) {
    return res.status(200).json(employee);
 };
 
-exports.createEmployee = function (req, res) {
-   const newEmployee = employeeService.createEmployee(req.body);
+exports.createEmployee = async function (req, res) {
+   const newEmployee = await employeeService.createEmployee(req.body);
 
     return res.status(201).json(newEmployee);
 };
