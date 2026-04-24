@@ -1,4 +1,5 @@
 const departamentRepository = require('../repositories/department.repository');
+const employeeRepository = require('../repositories/employee.repository')
 
 exports.findAll = async function() {
     return await departamentRepository.getAllDepartaments();
@@ -50,6 +51,11 @@ exports.deleteDepartment =async function(id) {
     }
 
     await exports.findById(parsedId);
+    const employeesInDepartment = await employeeRepository.findEmployeesByDepartmentId(parsedId);
+
+    if(employeesInDepartment.length > 0) {
+        throw new Error('Cannot delete department because it has employees assigned');
+    }
 
     return await departamentRepository.delete(parsedId);
 }

@@ -1,41 +1,61 @@
-const { json } = require('express');
 const employeeService = require('../services/employee.service');
 
-exports.getAllEmployees = function(req, res){
-    const employees = employeeService.getAllEmployees();
-    res.status(200).json(employees);
+exports.getAllEmployees = async function(req, res){
+    try {
+        const employees = await employeeService.getAllEmployees();
+        return res.status(200).json(employees);
+    } catch(error) {
+        res.status(404).json({
+            message: error.message
+        })
+    }
     
 }
 
-exports.getEmployeeById = function(req, res) {
-   const id = parseInt(req.params.id);
+exports.getEmployeeById = async function(req, res) {
+   try {
+    const employee = await employeeService.findEmployeeById(req.params.id);
+    return res.status(200).json(employee);
 
-   const employee = employeeService.findEmployeeById(id);
-
-   if(!employee){
-      return res.status(404).json({
-         message: 'Employee not found'
-      });
-   }
-
-   return res.status(200).json(employee);
+   } catch(error) {
+        res.status(404).json({
+            message: error.message
+        })
+   }  
 };
 
 exports.createEmployee = async function (req, res) {
-   const newEmployee = await employeeService.createEmployee(req.body);
-
+  try {
+    const newEmployee = await employeeService.createEmployee(req.body);
     return res.status(201).json(newEmployee);
+
+  } catch(error) {
+    res.status(404).json({
+        message: error.message
+    })
+  }
 };
 
-exports.updateEmployee = function(req, res) {
-   const employee = employeeService.updateEmployee(req.params.id, req.body);
-    return res.status(200).json(employee);
+exports.updateEmployee = async function(req, res) {
+    try {
+        const employee = await employeeService.updateEmployee(req.params.id, req.body);
+        return res.status(200).json(employee);
+    } catch(error) {
+        res.status(404).json({
+            message: error.message
+        })
+    }
 }
 
-exports.deleteEmployee = function(req , res) {
-    employeeService.deleteEmployee(req.params.id);
-
-    return res.status(200).json({
-        message: "Employee deleted successfully"
-    });
+exports.deleteEmployee = async function(req , res) {
+    try {
+        await employeeService.deleteEmployee(req.params.id);
+        return res.status(200).json({
+            message: "Employee deleted successfully"
+        });
+    } catch(error) {
+        res.status(404).json({
+            message: error.message
+        })
+    }
 }

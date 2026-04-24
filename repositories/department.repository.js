@@ -27,7 +27,7 @@ exports.updateDepartment = async function(id, departmentData) {
             id: id
         },
         data: {
-            name: departamentData.name
+            name: departmentData.name
         }
     });
 }
