@@ -1,31 +1,55 @@
 const employeesData = require('../data/employees');
+const prisma = require('../utils/prisma');
 
-exports.findAll = function() {
-    return employeesData;
+exports.findAll =async function() {
+    return await prisma.employee.findMany();
 }
 
-exports.findById = function(id) {
-    const employee = employeesData.find(emp => emp.id === id);
-    return employee;
+exports.findById =async function(id) {
+   return await prisma.employee.findUnique({
+        where: {
+            id
+        }
+   });
 };
 
-exports.create = function(employee) {
-    employeesData.push(employee);
-    return employee;
+exports.create =async function(employee) {
+   return await prisma.employee.create({
+        data: {
+            name: employee.name,
+            age: employee.age,
+            email: employee.email,
+            departmentId: employee.departmentId   
+        }
+   });
 }
 
-exports.update = function (existingEmployee, employeeData) {
-     existingEmployee.name = employeeData.name;
-     existingEmployee.age = employeeData.age
-
-     return existingEmployee;
+exports.update =async function (id, employeeData) {
+    return await prisma.employee.update({
+        where: {
+           id: id
+        },
+        data :{
+            name: employeeData.name,
+            age: employeeData.age,
+            email: employeeData.email,
+            departmentId: employeeData.departmentId
+        }
+    });
 }
 
-exports.delete = function(id) {
-    const employeeIndex = employeesData.findIndex(employe => employe.id === id);
-    employeesData.splice(employeeIndex, 1);
+exports.delete = async function(id) {
+  return await prisma.employee.delete({
+    where: {
+        id:id
+    }
+  })
+}
 
-    const deletedEmployee = employeesData[employeeIndex];
-
-    return deletedEmployee;
+exports.findEmployeesByDepartmentId = async function(departmentId) {
+    return await prisma.employee.findMany({
+        where: {
+            departmentId: departmentId
+        }
+    })
 }

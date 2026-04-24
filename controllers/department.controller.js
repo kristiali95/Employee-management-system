@@ -4,7 +4,7 @@ exports.getAllDepartaments =async function(req, res) {
     const departaments =await departamentsService.findAll();
 
     return res.status(200).json(departaments);
-}
+};
 
 exports.getDepartmentById = async function(req, res) {
    try {
@@ -15,7 +15,7 @@ exports.getDepartmentById = async function(req, res) {
         message: error.message
     })
    }
-}
+};
 
 exports.createDepartment =async function(req, res) {
     try {
@@ -27,7 +27,7 @@ exports.createDepartment =async function(req, res) {
         });
     }
 
-}
+};
 
 exports.updateDepartment = async function(req, res) {
     try{
@@ -38,7 +38,7 @@ exports.updateDepartment = async function(req, res) {
             message: error.message
         })
     }
-}
+};
 
 exports.deleteDepartment =async function(req, res) {
     try{
@@ -50,4 +50,4 @@ exports.deleteDepartment =async function(req, res) {
         })
     }
     
-}
+};
